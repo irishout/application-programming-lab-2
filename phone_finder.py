@@ -78,19 +78,3 @@ class PhoneNumberFinder:
             print(f"Неожиданная ошибка: {e}")
             return []
     
-p = PhoneNumberFinder.find_in_url("https://parkfreestyle.ru/contacts/")
-
-print(p)
-
-# r = PhoneNumberFinder.find_in_file("test_txt_file.txt")
-# print(r)
-
-# text = """
-#         Контакты: 
-#         основной +7 (912) 345-67-89, 
-#         резервный 8(495)123-45-67,
-#         и еще один 89123456789.
-#         Некорректный: 1234567890.
-#         """
-# t = PhoneNumberFinder.find_in_text(text)
-# print(t)

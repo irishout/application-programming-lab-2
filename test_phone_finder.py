@@ -86,9 +86,9 @@ class PhoneTester(unittest.TestCase):
         result = PhoneNumberFinder.find_in_text(text)
         self.assertEqual(result, [])
 
-    # def test_url(self):
-    #     """Тест поиска номеров через url"""
+    def test_url(self):
+        """Тест поиска номеров через url"""
 
-    #     expected_numper = ["+79308402575"]
-    #     result = PhoneNumberFinder.find_in_url("https://jedaclub.ru/adults-bjj")
-    #     self.assertEqual(result, expected_numper, "Неверно найден номер через url")
+        expected_numper = ['+74959664120', '+78282675144']
+        result = PhoneNumberFinder.find_in_url("https://parkfreestyle.ru/contacts/")
+        self.assertEqual(result, expected_numper, "Неверно найден номер через url")
