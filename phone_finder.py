@@ -2,6 +2,8 @@ import re
 import requests
 
 class PhoneNumberFinder:
+    def __init__(self):
+        pass
 
     # Скомпилированное регулярное выражение для поиска номеров телефонов
     PHONE_PATTERN = re.compile(
@@ -9,12 +11,22 @@ class PhoneNumberFinder:
         re.VERBOSE
     )
 
+    def __make_list_uniqe(self, arr):
+        uniqe_arr = []
+        for i in arr:
+            if i not in uniqe_arr:
+                uniqe_arr.append(i)
+        return uniqe_arr
+    
     @classmethod
     def find_in_text(cls,text: str):
-        return cls.PHONE_PATTERN.findall(text)
+        phones = cls.PHONE_PATTERN.findall(text)
+        result = [cls.normalize_phone(phone) for phone in phones]
+        fin = cls.__make_list_uniqe(cls, result)
+        return fin
 
     @classmethod
-    def validate_phome(cls,phone: str):
+    def validate_phone(cls,phone: str):
         return bool(cls.PHONE_PATTERN.fullmatch(phone))
 
     @classmethod
@@ -33,30 +45,52 @@ class PhoneNumberFinder:
                 content = file.read()
                 phones = cls.PHONE_PATTERN.findall(content)
                 result = [cls.normalize_phone(phone) for phone in phones]
-
-
+                fin = cls.__make_list_uniqe(cls, result)
+                return fin
+                
 
         except FileNotFoundError:
-            print(f"Файл {file_path} не найден.")
+            print(f"Файл {path} не найден.")
             return []
         except Exception as e:
-            print(f"Ошибка при чтении файла {file_path}: {e}")
+            print(f"Ошибка при чтении файла {path}: {e}")
             return []
 
     @classmethod
     def find_in_url(cls, url:str):
-        headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        }
-        response = requests.get(url, headers=headers, timeout=10)
-        response.raise_for_status()
 
-        phones = cls.find_in_text(response.text)
-        result = [cls.normalize_phone(phone) for phone in phones]
+        try:
+            headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+            response = requests.get(url, headers=headers, timeout=10)
+            response.raise_for_status()
 
-        return result
+            phones = cls.find_in_text(response.text)
+            result = [cls.normalize_phone(phone) for phone in phones]
+            fin = cls.__make_list_uniqe(cls, result)
+            return fin
+        
+        except requests.exceptions.RequestException as e:
+            print(f"Ошибка при запросе к {url}: {e}")
+            return []
+        except Exception as e:
+            print(f"Неожиданная ошибка: {e}")
+            return []
+    
+p = PhoneNumberFinder.find_in_url("https://parkfreestyle.ru/contacts/")
 
-# p = PhoneNumberFinder.find_in_url("https://www.topnomer.ru/blog/mobilnye-nomera-rossii-kody-po-regionam.html")
-# print(p)
+print(p)
+
 # r = PhoneNumberFinder.find_in_file("test_txt_file.txt")
 # print(r)
+
+# text = """
+#         Контакты: 
+#         основной +7 (912) 345-67-89, 
+#         резервный 8(495)123-45-67,
+#         и еще один 89123456789.
+#         Некорректный: 1234567890.
+#         """
+# t = PhoneNumberFinder.find_in_text(text)
+# print(t)
