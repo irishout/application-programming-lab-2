@@ -66,10 +66,11 @@ class PhoneNumberFinder:
             response = requests.get(url, headers=headers, timeout=10)
             response.raise_for_status()
 
-            phones = cls.find_in_text(response.text)
-            result = [cls.normalize_phone(phone) for phone in phones]
-            fin = cls.__make_list_uniqe(cls, result)
-            return fin
+            if response.status_code == 200:
+                phones = cls.find_in_text(response.text)
+                result = [cls.normalize_phone(phone) for phone in phones]
+                fin = cls.__make_list_uniqe(cls, result)
+                return fin
         
         except requests.exceptions.RequestException as e:
             print(f"Ошибка при запросе к {url}: {e}")

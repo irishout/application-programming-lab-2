@@ -23,14 +23,16 @@ if text:
 url = input("Введите ссылку для поиска номеров (Enter для пропуска)")
 if url:
     url_result = finder.find_in_url(url)
-    print(f"Найдено номеров {len(url_result)}")
-    print(url_result)
+    if url_result:
+        print(f"Найдено номеров {len(url_result)}")
+        print(url_result)
 
 #Поиск новеров в файле (4)
 path = input("Введите название файла (Enter для пропуска)")
 if path:
     file_result = finder.find_in_file(path)
-    print(f"Найдено номеров {len(file_result)}")
-    print(file_result)
+    if file_result:
+        print(f"Найдено номеров {len(file_result)}")
+        print(file_result)
 
 
